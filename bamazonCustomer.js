@@ -2,45 +2,89 @@ var mysql = require("mysql");
 require("dotenv").config();
 var inquirer = require("inquirer");
 var Table = require("cli-table");
+var colors = require("colors");
+var figlet = require("figlet");
 
 var connection = mysql.createConnection({
     host: "localhost",
 
-    // Your port; if not 3306
     port: 3306,
 
-    // Your username
     user: "root",
 
-    // Your password
     password: process.env.MY_SQL_PASS,
     database: "bamazon_db"
 });
 
 connection.connect(function (err) {
     if (err) throw err;
-    //   console.log("connected as id " + connection.threadId);
-    showItems();
+
+    initQuest();
 });
 
+function initQuest() {
+    inquirer
+        .prompt([
+            {
+                name: "answer",
+                type: "confirm",
+                message: "Welcome to Bamazon! Would you like to see what we have for purchase?",
+                default: true
+            }
+        ]).then(function (ans) {
+
+
+            if (ans.answer === true) {
+
+                showItems();
+            } else {
+                console.log("Well please leave and never come back!!!\n");
+                console.log("We don't need your business anyway!\n");
+                figlet("KICK ROCKS!!!", function (err, data) {
+                    if (err) {
+                        console.log('Something went wrong...');
+                        console.dir(err);
+                        return;
+                    }
+                    console.log(data)
+                });
+                connection.end();
+            }
+        })
+}
+
 function showItems() {
+
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
-        var table = new Table ({
+
+
+        figlet('BUY OUR STUFF |||| BAMAZON', function (err, data) {
+            if (err) {
+                console.log('Something went wrong...');
+                console.dir(err);
+                return;
+            }
+            console.log(data)
+        });
+
+        var table = new Table({
             head: ["ID", "Product", "Department", "Price", "Stock"],
-            colWidths: [5, 40, 30 , 30, 30]
+            colWidths: [5, 40, 22, 22, 22]
         })
         for (var i = 0; i < results.length; i++) {
 
             table.push([results[i].item_id, results[i].product_name, results[i].department_name, parseFloat(results[i].price).toFixed(2), results[i].stock_quantity]);
-            // console.log("Item #: " + results[i].item_id + " - " + results[i].product_name + " - " + results[i].department_name + " - " + "$" + parseFloat(results[i].price).toFixed(2) + " - " + "qty: " + results[i].stock_quantity);
 
         }
+
         console.log(table.toString());
     });
+
     setTimeout(userPurchase, 1000);
 }
 
+//function creating prompts to see what user would like to purchase
 function userPurchase() {
     inquirer
         .prompt([
@@ -78,7 +122,9 @@ function userPurchase() {
                     console.log("\r\n");
                     console.log("Sorry item not in inventory, please try again.");
                     setTimeout(userPurchase, 1000);
+
                 } else {
+
                     if (result.qtySelection > res[0].stock_quantity) {
                         console.log("\r\n");
                         console.log("Sorry we do not enough have enough in stock! Please try again!");
@@ -89,20 +135,43 @@ function userPurchase() {
                         var answer = result.choice;
                         var selection = result.qtySelection;
                         var newQty = parseInt(res[0].stock_quantity) - parseInt(selection);
+                        var fixedPrice = res[0].price;
 
                         connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQty, answer], function (err) {
                             if (err) throw err;
-                            console.log("Thank you for purchasing " + selection + " of Item # " + answer + ". Your total is $" + parseInt(selection) * parseFloat(res[0].price).toFixed(2));
+                            console.log("Thank you for purchasing " + selection + " of Item # " + answer + ". Your total is $" + parseInt(selection) * parseFloat(fixedPrice).toFixed(2));
 
-                        })
+                            anotherPurchase();
+                        });
                     }
-
-                    connection.end();
-
                 }
             })
         })
 }
+//end of function for userPurchase
+
+//function asking if the user would like to make more purchases
+function anotherPurchase() {
+    inquirer
+        .prompt([
+            {
+                name: "answer",
+                type: "confirm",
+                message: "Would you like to make another purchase???",
+                default: false
+            }
+
+        ]).then(function (user) {
+
+            if (user.answer === true) {
+                userPurchase();
+            } else {
+                console.log("Thank you!!! Come back any time!!!");
+                connection.end();
+            }
+        })
+}
+//end anotherPurchase function
 
 
 
