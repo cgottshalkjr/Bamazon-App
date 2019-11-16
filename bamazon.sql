@@ -33,30 +33,3 @@ VALUES ("toejam and earl(sega genesis)", "electronics", 40.00, 55);
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("baha men cd", "electronics", 150.00, 999);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- * item_id (unique id for each product)
-
---    * product_name (Name of product)
-
---    * department_name
-
---    * price (cost to customer)
-
---    * stock_quantity (how much of the product is available in stores)

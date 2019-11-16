@@ -33,15 +33,10 @@ function showItems() {
         }
         console.log("----------------------------------");
     });
-    setTimeout(purchaseInquery, 1000);
+    setTimeout(userPurchase, 1000);
 }
 
-// connection.query("SELECT * FROM products", function (err, res) {
-//     if (err) throw err;
-// })
-
-
-function purchaseInquery() {
+function userPurchase() {
     inquirer
         .prompt([
             {
@@ -61,22 +56,22 @@ function purchaseInquery() {
                 if (!res.length) {
                     console.log("\r\n");
                     console.log("Sorry item not in inventory, please try again.");
-                    setTimeout(purchaseInquery, 1000);
+                    setTimeout(userPurchase, 1000);
                 } else {
                     if (result.qtySelection > res[0].stock_quantity) {
                         console.log("\r\n");
-                        console.log("Sorry we do not enough have enough in stock! PLeas try again!");
-                        setTimeout(purchaseInquery, 1000);
+                        console.log("Sorry we do not enough have enough in stock! Please try again!");
+                        setTimeout(userPurchase, 1000);
                     } else {
 
                         var newQty = parseInt(res[0].stock_quantity) - parseInt(result.qtySelection)
-                        connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", newQty, result.choice, function (err, result) {
-                                if (err) throw err;
-                            // console.log("Thank you for purchasing " + result.qtySelection + "of " + result.choice + ". Your total is $" + parseInt(result.qtySelection) * parseInt(res[0].price))
+                        connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQty, result.choice], function (err, result) {
+                            if (err) throw err;
+                            console.log("Thank you for purchasing " + result.qtySelection + "of " + result.choice + ". Your total is $" + parseInt(result.qtySelection) * parseFloat(res[0].price).toFixed(2));
 
                         })
-                        connection.end();
                     }
+                    connection.end();
                 }
             })
         })
