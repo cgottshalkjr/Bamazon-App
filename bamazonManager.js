@@ -45,7 +45,7 @@ function initManager() {
                     break;
 
                 case "View low inventory":
-                    func1();
+                    lowQty();
                     break;
 
                 case "Add to inventory":
@@ -67,7 +67,7 @@ function viewProducts() {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
 
-        figlet('BAMAZON ||| MANAGERIAL VIEW', function (err, data) {
+        figlet('BAMAZON MANAGERIAL VIEW', function (err, data) {
             if (err) {
                 console.log('Something went wrong...');
                 console.dir(err);
@@ -93,3 +93,34 @@ function viewProducts() {
     setTimeout(initManager, 1000);
 
 }
+//end of viewProducts function.
+
+//Creating a function so manager can view low stock.
+function lowQty() {
+
+    var query = "SELECT * FROM products WHERE stock_quantity < 10";
+
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+        var table = new Table({
+            head: ["ID", "Product", "Department", "Price", "Stock"],
+            colWidths: [5, 40, 22, 22, 22]
+        })
+
+        for (var i = 0; i < res.length; i++) {
+
+            table.push([res[i].item_id, res[i].product_name, res[i].department_name, parseFloat(res[i].price).toFixed(2), parseInt(res[i].stock_quantity)]);
+            // console.log(res[i].item_id);
+            // console.log(res[i].product_name);
+            // console.log(res[i].department_name);
+            // console.log(res[i].price);
+            // console.log(res[i].stock_quantity);
+
+        }
+        // console.log(res);
+        console.log(table.toString());
+    });
+
+}
+//End of lowQty function.
