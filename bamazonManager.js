@@ -34,7 +34,7 @@ function initManager() {
                 name: "answer",
                 type: "rawlist",
                 message: "Hello Mr. Manager, What would you like to do?",
-                choices: ["View products for sale", "View low inventory", "Add to invetory", "Add new product"]
+                choices: ["View products for sale", "View low inventory", "Add to inventory", "Add new product"]
             }
         ]).then(function (result) {
 
@@ -49,7 +49,7 @@ function initManager() {
                     break;
 
                 case "Add to inventory":
-                    func2();
+                    addStock();
                     break;
 
                 case "Add new product":
@@ -124,3 +124,59 @@ function lowQty() {
 
 }
 //End of lowQty function.
+
+function addStock() {
+
+    inquirer
+        .prompt([
+            {
+                name: "answer",
+                message: "Which item would you like to add stock to?",
+                type: "input"
+            }, {
+                name: "amount",
+                message: "And how much would you like to add?",
+                type: "input"
+            }
+
+
+        ])
+        .then(function (ans) {
+
+
+            connection.query("SELECT * FROM products", function (err, results) {
+                if (err) throw err;
+
+
+                var chosenItem;
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].item_id === parseInt(ans.answer)) {
+                        chosenItem = results[i];
+                    }
+                }
+
+                var newStockNum = parseInt(chosenItem.stock_quantity) + parseInt(ans.amount);
+
+                console.log(newStockNum);
+
+
+                var query = "UPDATE products SET ? WHERE ?";
+
+                connection.query(query, [{ stock_quantity: newStockNum }, { item_id: ans.answer }], function (error) {
+                    if (error) throw error;
+
+                })
+            })
+
+        })
+}
+
+
+
+
+
+
+
+
+
+// { stock_quantity: ans.answer }]
