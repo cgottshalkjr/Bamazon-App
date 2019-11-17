@@ -53,11 +53,10 @@ function initManager() {
                     break;
 
                 case "Add new product":
-                    func3();
+                    addItem();
                     break;
 
             }
-
         })
 }
 
@@ -111,20 +110,16 @@ function lowQty() {
         for (var i = 0; i < res.length; i++) {
 
             table.push([res[i].item_id, res[i].product_name, res[i].department_name, parseFloat(res[i].price).toFixed(2), parseInt(res[i].stock_quantity)]);
-            // console.log(res[i].item_id);
-            // console.log(res[i].product_name);
-            // console.log(res[i].department_name);
-            // console.log(res[i].price);
-            // console.log(res[i].stock_quantity);
 
         }
-        // console.log(res);
-        console.log(table.toString());
-    });
 
+        console.log(table.toString());
+
+    });
 }
 //End of lowQty function.
 
+//creating function to add stock to low inventory.
 function addStock() {
 
     inquirer
@@ -170,13 +165,42 @@ function addStock() {
 
         })
 }
+//end of addStock function.
 
+function addItem() {
 
+    inquirer
+        .prompt([
+            {
+                name: "addition",
+                message: "What would you like to add?",
+                type: "input"
+            }, {
+                name: "category",
+                message: "What department does this belong?",
+                type: "input"
+            }, {
+                name: "cost",
+                message: "How much does this cost?",
+                type: "input",
+            }, {
+                name: "stock",
+                message: "How much would you like to stock?",
+                type: "input"
+            }
+        ])
+        .then(function (answer) {
 
+            connection.query("INSERT INTO products SET ?", {
 
+                product_name: answer.addition,
+                department_name: answer.category,
+                price: answer.cost,
+                stock_quantity: answer.stock
 
-
-
-
-
-// { stock_quantity: ans.answer }]
+            }, function (err) {
+                if (err) throw err;
+            })
+        })
+}
+//end of addItem function.
