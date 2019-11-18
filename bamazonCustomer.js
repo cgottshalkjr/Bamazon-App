@@ -56,14 +56,28 @@ function initQuest() {
                     console.log("\r\nPlease enter a number!!".brightWhite.bgMagenta);
                     console.log("\r\n".bgMagenta);
                 }
-                
+
             }
         ]).then(function (ans) {
 
             if (ans.answer === true) {
 
-                //if user selects yes we move on to next function
-                showItems();
+                //figlet 
+                figlet.text('BAMAZON...BUY OUR STUFF', {
+                    font: 'Doom',
+                    horizontalLayout: 'default',
+                    verticalLayout: 'default'
+                }, function (err, data) {
+                    if (err) {
+                        console.log('Something went wrong...');
+                        console.dir(err);
+                        return;
+                    }
+                    console.log(data.silly);
+                    //if user selects yes we move on to next function
+                    showItems();
+                });
+                //end figlet
 
                 //Or we close out the game and tell them never to come back!
             } else {
@@ -97,20 +111,7 @@ function showItems() {
 
         if (err) throw err;
 
-        //figlet 
-        figlet.text('BAMAZON...BUY OUR STUFF', {
-            font: 'Doom',
-            horizontalLayout: 'default',
-            verticalLayout: 'default'
-        }, function (err, data) {
-            if (err) {
-                console.log('Something went wrong...');
-                console.dir(err);
-                return;
-            }
-            console.log(data.warn);
-        });
-        //end figlet
+
 
         //creating table to display our inventory
         var table = new Table({
@@ -152,8 +153,10 @@ function userPurchase() {
                     if (isNaN(value) === false) {
                         return true;
                     }
+
                     console.log("\r\n");
                     console.log("\r\nPlease enter a number!!".brightWhite.bgMagenta);
+                    console.log("\r\n");
                 }
 
             }, {
@@ -164,6 +167,7 @@ function userPurchase() {
                     if (isNaN(value) === false) {
                         return true;
                     }
+
                     console.log("\r\n");
                     console.log("\r\nPlease enter a number!!".brightWhite.bgMagenta);
                     console.log("\r\n");
