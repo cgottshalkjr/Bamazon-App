@@ -34,7 +34,13 @@ function initManager() {
                 name: "answer",
                 type: "rawlist",
                 message: "Hello Mr. Manager, What would you like to do?",
-                choices: ["View products for sale", "View low inventory", "Add to inventory", "Add new product"]
+                choices: ["View products for sale", "View low inventory", "Add to inventory", "Add new product"],
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
             }
         ]).then(function (result) {
 
@@ -60,21 +66,24 @@ function initManager() {
         })
 }
 
+// function figletDisplay() {
+//     figlet('BAMAZON MANAGERIAL VIEW', function (err, data) {
+//         if (err) {
+//             console.log('Something went wrong...');
+//             console.dir(err);
+//             return;
+//         }
+//         console.log(data)
+//     });
+// }
+
 //creating function for manager to view products
 function viewProducts() {
 
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
 
-        figlet('BAMAZON MANAGERIAL VIEW', function (err, data) {
-            if (err) {
-                console.log('Something went wrong...');
-                console.dir(err);
-                return;
-            }
-            console.log(data)
-        });
-
+        // setTimeout(figletDisplay, 3000);
 
         var table = new Table({
             head: ["ID", "Product", "Department", "Price", "Stock"],
@@ -87,10 +96,26 @@ function viewProducts() {
         }
 
         console.log(table.toString());
+        inquirer
+            .prompt([
+                {
+                    name: "answer",
+                    message: "Would you like to make another decision?",
+                    type: "confirm",
+                    validate: function (value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        console.log("\r\nPlease enter a number!!");
+                    }
+                }
+            ])
+            .then(function (answer) {
+                if (answer.answer === true) {
+                    initManager();
+                }
+            })
     });
-
-    setTimeout(initManager, 1000);
-
 }
 //end of viewProducts function.
 
@@ -115,7 +140,29 @@ function lowQty() {
 
         console.log(table.toString());
 
+        inquirer
+            .prompt([
+                {
+                    name: "answer",
+                    message: "Would you like to make another decision?",
+                    type: "confirm",
+                    validate: function (value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        console.log("\r\nPlease enter a number!!");
+                    }
+                }
+            ])
+            .then(function (answer) {
+                if (answer.answer === true) {
+                    initManager();
+                }
+            })
+
     });
+
+
 }
 //End of lowQty function.
 
@@ -127,20 +174,43 @@ function addStock() {
             {
                 name: "answer",
                 message: "Which item would you like to add stock to?",
-                type: "input"
+                type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
             }, {
                 name: "amount",
                 message: "And how much would you like to add?",
-                type: "input"
+                type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
             }
 
 
         ])
         .then(function (ans) {
 
-
             connection.query("SELECT * FROM products", function (err, results) {
                 if (err) throw err;
+
+                var table = new Table({
+                    head: ["ID", "Product", "Department", "Price", "Stock"],
+                    colWidths: [5, 40, 22, 22, 22]
+                })
+
+                // for (var i = 0; i < results.length; i++) {
+
+                //     table.push([results[i].item_id, results[i].product_name, results[i].department_name, parseFloat(results[i].price).toFixed(2), parseInt(results[i].stock_quantity)]);
+
+                // }
+
 
 
                 var chosenItem;
@@ -148,11 +218,12 @@ function addStock() {
                     if (results[i].item_id === parseInt(ans.answer)) {
                         chosenItem = results[i];
                     }
+                    table.push([results[i].item_id, results[i].product_name, results[i].department_name, parseFloat(results[i].price).toFixed(2), parseInt(results[i].stock_quantity)]);
                 }
 
                 var newStockNum = parseInt(chosenItem.stock_quantity) + parseInt(ans.amount);
 
-                console.log(newStockNum);
+                console.log("You added " + parseInt(ans.amount) +  " " + results[0].product_name + " to the stock!" + " You now have " + newStockNum + " in stock!");
 
 
                 var query = "UPDATE products SET ? WHERE ?";
@@ -160,6 +231,7 @@ function addStock() {
                 connection.query(query, [{ stock_quantity: newStockNum }, { item_id: ans.answer }], function (error) {
                     if (error) throw error;
 
+                   
                 })
             })
 
@@ -174,19 +246,50 @@ function addItem() {
             {
                 name: "addition",
                 message: "What would you like to add?",
-                type: "input"
+                type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
+
             }, {
+
                 name: "category",
                 message: "What department does this belong?",
-                type: "input"
+                type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
+
             }, {
+
                 name: "cost",
                 message: "How much does this cost?",
                 type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
+
             }, {
+
                 name: "stock",
                 message: "How much would you like to stock?",
-                type: "input"
+                type: "input",
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    console.log("\r\nPlease enter a number!!");
+                }
+
             }
         ])
         .then(function (answer) {

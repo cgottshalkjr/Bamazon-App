@@ -5,6 +5,19 @@ var Table = require("cli-table");
 var colors = require("colors");
 var figlet = require("figlet");
 
+colors.setTheme({
+    silly: 'rainbow',
+    input: 'grey',
+    verbose: 'cyan',
+    prompt: 'grey',
+    info: 'green',
+    data: 'grey',
+    help: 'cyan',
+    warn: 'yellow',
+    debug: 'blue',
+    error: 'red'
+  });
+
 var connection = mysql.createConnection({
     host: "localhost",
 
@@ -46,7 +59,7 @@ function initQuest() {
                         console.dir(err);
                         return;
                     }
-                    console.log(data)
+                    console.log(data.warn)
                 });
                 connection.end();
             }
@@ -59,13 +72,17 @@ function showItems() {
         if (err) throw err;
 
 
-        figlet('BUY OUR STUFF |||| BAMAZON', function (err, data) {
+        figlet.text('BAMAZON...BUY OUR STUFF', {
+            font: 'Doom',
+            horizontalLayout: 'default',
+            verticalLayout: 'default'
+        }, function (err, data) {
             if (err) {
                 console.log('Something went wrong...');
                 console.dir(err);
                 return;
             }
-            console.log(data)
+            console.log(data.warn);
         });
 
         var table = new Table({
@@ -78,7 +95,7 @@ function showItems() {
 
         }
 
-        console.log(table.toString());
+        console.log(table.toString().help);
     });
 
     setTimeout(userPurchase, 1000);
@@ -96,7 +113,7 @@ function userPurchase() {
                     if (isNaN(value) === false) {
                         return true;
                     }
-                    console.log("\r\nPlease enter a number!!");
+                    console.log("\r\nPlease enter a number!!".brightWhite.bgMagenta);
                 }
 
             }, {
@@ -107,7 +124,7 @@ function userPurchase() {
                     if (isNaN(value) === false) {
                         return true;
                     }
-                    console.log("\r\nPlease enter a number!!");
+                    console.log("\r\nPlease enter a number!!".brightWhite.bgMagenta);
                 }
             }
 
@@ -120,14 +137,14 @@ function userPurchase() {
 
                 if (!res.length) {
                     console.log("\r\n");
-                    console.log("Sorry item not in inventory, please try again.");
+                    console.log("Sorry item not in inventory, please try again.".brightWhite.bgMagenta);
                     setTimeout(userPurchase, 1000);
 
                 } else {
 
                     if (result.qtySelection > res[0].stock_quantity) {
                         console.log("\r\n");
-                        console.log("Sorry we do not enough have enough in stock! Please try again!");
+                        console.log("Sorry we do not enough have enough in stock! Please try again!".brightWhite.bgMagenta);
                         setTimeout(userPurchase, 1000);
 
                     } else {
@@ -139,7 +156,7 @@ function userPurchase() {
 
                         connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQty, answer], function (err) {
                             if (err) throw err;
-                            console.log("Thank you for purchasing " + selection + " of Item # " + answer + ". Your total is $" + parseInt(selection) * parseFloat(fixedPrice).toFixed(2));
+                            console.log("Thank you for purchasing " + selection + " of Item # " + answer + ". Your total is $" + parseInt(selection) * parseFloat(fixedPrice).toFixed(2).brightWhite.bgMagenta);
 
                             anotherPurchase();
                         });
@@ -166,7 +183,7 @@ function anotherPurchase() {
             if (user.answer === true) {
                 userPurchase();
             } else {
-                console.log("Thank you!!! Come back any time!!!");
+                console.log("Thank you!!! Come back any time!!!".brightWhite.bgMagenta);
                 connection.end();
             }
         })
