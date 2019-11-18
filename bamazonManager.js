@@ -159,10 +159,7 @@ function lowQty() {
                     initManager();
                 }
             })
-
     });
-
-
 }
 //End of lowQty function.
 
@@ -223,7 +220,7 @@ function addStock() {
 
                 var newStockNum = parseInt(chosenItem.stock_quantity) + parseInt(ans.amount);
 
-                console.log("You added " + parseInt(ans.amount) +  " " + results[0].product_name + " to the stock!" + " You now have " + newStockNum + " in stock!");
+                console.log("You added " + parseInt(ans.amount) + " " + results[0].product_name + " to the stock!" + " You now have " + newStockNum + " in stock!");
 
 
                 var query = "UPDATE products SET ? WHERE ?";
@@ -231,7 +228,7 @@ function addStock() {
                 connection.query(query, [{ stock_quantity: newStockNum }, { item_id: ans.answer }], function (error) {
                     if (error) throw error;
 
-                   
+
                 })
             })
 
