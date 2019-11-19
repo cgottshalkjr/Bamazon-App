@@ -5,6 +5,9 @@ var inquirer = require("inquirer");
 var Table = require("cli-table");
 var colors = require("colors");
 var figlet = require("figlet");
+var recordKeeping = [];
+var databaseUpdate = [];
+var total = 0;
 
 //setting themes for colors
 colors.setTheme({
@@ -49,7 +52,7 @@ function initQuest() {
                 message: "Welcome to Bamazon! Would you like to see what we have for purchase?",
                 default: true,
                 validate: function (value) {
-                    if (isNaN(value) === false) {
+                    if (!isNaN(value)) {
                         return true;
                     }
                     console.log("\r\n".bgMagenta);
@@ -60,7 +63,7 @@ function initQuest() {
             }
         ]).then(function (ans) {
 
-            if (ans.answer === true) {
+            if (ans.answer) {
 
                 //figlet 
                 figlet.text('BAMAZON...BUY OUR STUFF', {
@@ -161,7 +164,7 @@ function userPurchase() {
 
             }, {
                 name: "qtySelection",
-                message: "How many units of would you like?",
+                message: "How many units would you like?",
                 type: "input",
                 validate: function (value) {
                     if (isNaN(value) === false) {
@@ -196,22 +199,39 @@ function userPurchase() {
                         setTimeout(userPurchase, 1000);
 
                     } else {
+                        //shopping cart
+                        recordKeeping.push(res, parseInt(result.qtySelection))
+                        databaseUpdate.push(res[0].item_id, (parseInt(res[0].stock_quantity) - parseInt(result.qtySelection)));
 
-                        var answer = result.choice;
-                        var selection = result.qtySelection;
-                        var newQty = parseInt(res[0].stock_quantity) - parseInt(selection);
-                        var purchPrice = parseInt(selection) * parseFloat(res[0].price).toFixed(2);
+                        // var answer = result.choice;
+                        // var selection = result.qtySelection;
+                        // var newQty = parseInt(res[0].stock_quantity) - parseInt(selection);
+                        // var purchPrice = parseInt(selection) * parseFloat(res[0].price);
 
-                        connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQty, answer], function (err) {
+                        // connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQty, answer], function (err) {
 
-                            if (err) throw err;
+                        // if (err) throw err;
 
-                            console.log("\r\n");
-                            console.log("Thank you for purchasing " + selection + " of Item # " + answer + ". Your total is $" + purchPrice);
+                        console.log("\r\n");
 
-                            anotherPurchase();
-
+                        var table = new Table({
+                            head: ["ID", "Product", "Price", "Quantity"],
+                            colWidths: [5, 40, 22, 22]
                         });
+                        for (var i = 0; i < recordKeeping.length; i += 2) {
+                            table.push(
+                                [recordKeeping[i][0].item_id, recordKeeping[i][0].product_name, recordKeeping[i][0].price, recordKeeping[i + 1]]
+                            );
+                            total += (recordKeeping[i][0].price * recordKeeping[i + 1]);
+                        }
+
+                        table.push(["", "", "", ""], ["", "", "TOTAL:", total])
+                        console.log(table.toString());
+                        // console.log("Thank you for purchasing " + selection + " " + res[0].product_name + ". Your total is $" + purchPrice.toFixed(2));
+
+                        checkout();
+
+                        // });
                     }
                 }
             })
@@ -220,7 +240,7 @@ function userPurchase() {
 //end of function for userPurchase
 
 //function asking if the user would like to make more purchases
-function anotherPurchase() {
+function checkout() {
     inquirer
         .prompt([
             {
@@ -237,10 +257,16 @@ function anotherPurchase() {
                 userPurchase();
 
             } else {
-
+                for (let i = 0; i < databaseUpdate.length; i++) {
+                    var query2 = "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
+                    connection.query(query2, [databaseUpdate[i + 1], databaseUpdate[i]], function (error, result) {
+                        
+                    })
+                }
                 console.log("\r\n");
                 console.log("Thank you!!! Come back any time!!!".brightWhite.bgMagenta);
                 console.log("\r\n");
+
                 connection.end();
             }
         })

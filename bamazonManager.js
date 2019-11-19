@@ -78,8 +78,8 @@ function initManager() {
                     break;
 
                 case "Add to inventory":
-                    addStock();
                     displayTable();
+                    // addStock();
                     break;
 
                 case "Add new product":
@@ -204,7 +204,7 @@ function displayTable() {
         }
 
         console.log(table.toString());
-
+           addStock(); 
     })
 }
 
