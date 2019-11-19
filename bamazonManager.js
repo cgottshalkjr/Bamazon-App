@@ -78,8 +78,8 @@ function initManager() {
                     break;
 
                 case "Add to inventory":
-                    displayTable();
-                    // addStock();
+                    // displayTable();
+                    addStock();
                     break;
 
                 case "Add new product":
@@ -188,25 +188,25 @@ function lowQty() {
 }
 //End of lowQty function.
 
-function displayTable() {
+// function displayTable() {
 
-    connection.query("SELECT * FROM products", function (err, results) {
-        if (err) throw err;
+//     connection.query("SELECT * FROM products", function (err, results) {
+//         if (err) throw err;
 
-        var table = new Table({
-            head: ["ID", "Product", "Department", "Price", "Stock"],
-            colWidths: [5, 40, 22, 22, 22]
-        })
-        for (var i = 0; i < results.length; i++) {
+//         var table = new Table({
+//             head: ["ID", "Product", "Department", "Price", "Stock"],
+//             colWidths: [5, 40, 22, 22, 22]
+//         })
+//         for (var i = 0; i < results.length; i++) {
 
-            table.push([results[i].item_id, results[i].product_name, results[i].department_name, parseFloat(results[i].price).toFixed(2), results[i].stock_quantity]);
+//             table.push([results[i].item_id, results[i].product_name, results[i].department_name, parseFloat(results[i].price).toFixed(2), results[i].stock_quantity]);
 
-        }
+//         }
 
-        console.log(table.toString());
-           addStock(); 
-    })
-}
+//         console.log(table.toString());
+//            addStock(); 
+//     })
+// }
 
 
 //creating function to add stock to low inventory.
@@ -262,7 +262,7 @@ function addStock() {
                 var newStockNum = parseInt(chosenItem.stock_quantity) + parseInt(ans.amount);
 
                 console.log("\r\n");
-                console.log("You added " + parseInt(ans.amount) +  " " + addedItem.info+ " to the stock!" + " You now have " + newStockNum + " in stock!");
+                console.log("You added " + parseInt(ans.amount) +  " " + addedItem + " to the stock!" + " You now have " + newStockNum + " in stock!");
                 console.log("\r\n");
 
 
