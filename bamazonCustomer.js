@@ -259,6 +259,7 @@ function checkout() {
             } else {
 
                 for (var i = 0; i < dbUpdate.length; i += 2) {
+                    //updating database 
                     var query2 = "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
                     connection.query(query2, [dbUpdate[i + 1], dbUpdate[i]], function (error) {
                         if (error) throw error;
