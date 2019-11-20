@@ -48,8 +48,37 @@ connection.connect(function (err) {
             return;
         }
         console.log(data.silly);
-        //if user selects yes we move on to next function
+        
+        initSuper();
     
     });
     //end figlet
+
 });
+
+function initSuper() {
+
+    inquirer
+    .prompt([
+        {
+            name: "answer",
+            message: "What would you like to do Senõr Supervisor?",
+            type: "rawlist",
+            choices: ["View product sales by deparment", "Create new department"]
+        }
+    ])
+    .then(function (result){
+
+        switch (result.answer){
+
+            case "View product sales by department":
+                viewSales();
+
+        }
+    });
+}
+
+
+//DID NOT FINISH SUPERVISOR
+//WAS TUCKERED OUT ON THIS HW BY TIME I GOT HERE
+//SHEL OR KAT IF YOU ARE READING THIS...WHAT UP?
