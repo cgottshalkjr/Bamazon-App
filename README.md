@@ -2,7 +2,9 @@
 ---
 >Created by **Christopher Gottshalk**
 ---
-**BAMAZON** is an node based app where everything comes at the command line. Backed end version of an e-commerce app. It is backed up with MySQL database. The app also uses JavaScript and has multiple node packages installed for a better display. [CHECK OUT THIS VIDEO DEMO OF THE APP](https://drive.google.com/file/d/15LvwzZiid5VaiHn97XJtc3uRL35Uqovw/view)
+**BAMAZON** is an node based app where everything comes at the command line. Backed end version of an e-commerce app. It is backed up with MySQL database. The app also uses JavaScript and has multiple node packages installed for a better display. [CHECK OUT THIS VIDEO DEMO OF THE APP](https://drive.google.com/file/d/15LvwzZiid5VaiHn97XJtc3uRL35Uqovw/view) 
+**sorry for loud music**
+**open video in new tab**
 
  ### INSTALL
  ```
@@ -37,11 +39,11 @@
 ---
 ---
 ![alt text](img/img5.png "Low Inventory")
-**Items displaying inew new table that are low in stock**
+**Items displaying in new table that are low in stock**
 ---
 ---
 ![alt text](img/img6.png "Inventory Added")
-**Items been added by Manager to stock**
+**Items that have been added by Manager to stock**
 ---
 ---
 ![alt text](img/img7.png "Adding Stock")
