@@ -53,14 +53,6 @@ function initQuest() {
                 type: "confirm",
                 message: "\r\nWelcome to Bamazon! Would you like to see what we have for purchase?".info,
                 default: true,
-                validate: function (value) {
-                    if (!isNaN(value)) {
-                        return true;
-                    }
-                    console.log("\r\n");
-                    console.log("\r\nPlease enter a number!!".info);
-                    console.log("\r\n");
-                }
 
             }
         ]).then(function (ans) {
@@ -89,7 +81,7 @@ function initQuest() {
             } else {
 
                 console.log("\r\n");
-                console.log("Well please leave and never come back!!!\n".info);
+                console.log("Well please leave and never come back!!!".info);
                 console.log("\r\n");
 
                 console.log("\r\n");
@@ -159,9 +151,10 @@ function userPurchase() {
                         return true;
                     }
 
-                    console.log("\r\n");
-                    console.log("\r\nPlease enter a number!!".info);
-                    console.log("\r\n");
+                    
+                   return console.log("\r\nPlease enter a number!!\r\n".help);
+                    
+                    
                 }
 
             }, {
@@ -172,9 +165,9 @@ function userPurchase() {
                     if (isNaN(value) === false) {
                         return true;
                     }
-                    console.log("\r\n");
-                    console.log("\r\nPlease enter a number!!".info);
-                    console.log("\r\n");
+                    
+                  return  console.log("\r\nPlease enter a number!!\r\n".help);
+                   
                 }
             }
         ]).then(function (result) {
@@ -228,7 +221,7 @@ function userPurchase() {
                             total += (shopcartUpdate[i][0].price * shopcartUpdate[i + 1]);
                         }
 
-                        table.push(["", "", "", ""], ["", "", "TOTAL:", total]);
+                        table.push(["", "", "", ""], ["", "", "TOTAL:", parseFloat(total).toFixed(2)]);
                         console.log(table.toString().help);
 
                         checkout();
